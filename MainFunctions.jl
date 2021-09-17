@@ -37,3 +37,13 @@ function moveToTheSud(robot)
         move!(robot, Sud)
     end
 end
+
+function moveToStart(robot)
+    while !isborder(robot, West)
+        move!(robot, West)
+    end
+
+    while !isborder(robot, Sud)
+        move!(robot, Sud)
+    end
+end
