@@ -7,9 +7,9 @@ moveToStart(r)
 
 for i in 1:v
     if i % 2 != 0
-        putMarkersTillTheEnd(r, Ost)
+        moveTillTheEnd(r, Ost, true)
     else
-        putMarkersTillTheEnd(r, West)
+        moveTillTheEnd(r, West, true)
     end
 
     if !isborder(r, Nord)

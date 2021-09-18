@@ -14,14 +14,14 @@ for _ in 1:(len // 2)
     move!(r, West)
 end
 
-putMarkersTillTheEnd(r, Nord)
-putMarkersTillTheEnd(r, Sud)
+moveTillTheEnd(r, Nord, true)
+moveTillTheEnd(r, Sud, true)
 
 for _ in 1:(wid // 2)
     move!(r, Nord)
 end
 
-putMarkersTillTheEnd(r, West)
+moveTillTheEnd(r, West, true)
 for _ in 1:(len // 2 - 1)
     move!(r, Ost)
 end
