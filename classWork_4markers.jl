@@ -1,7 +1,6 @@
 using HorizonSideRobots
 include("MainFunctions.jl")
 
-r = Robot()
 directions = Int[]
 vertical = width(r)
 horizontal = length(r)
@@ -32,21 +31,15 @@ moveSeveralCells(r, horizontal // 2 - 1, West)
 putmarker!(r)
 moveTillTheEnd(r, West)
 
-println(directions)
 directions = reverse(directions)
-println(directions)
 for i in 1:size(directions)[1]
     if i % 2 != 0
-        println(i, " ", directions[i])
         for x in 1:(directions[i] + 1)
-            println("ok")
             move!(r, Ost)
         end
     else
-        println(i, " ", directions[i])
         for x in 1:(directions[i] - 1)
             move!(r, Nord)
         end
     end
 end
-show!(r)
