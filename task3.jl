@@ -3,7 +3,7 @@ include("MainFunctions.jl")
 
 r = Robot()
 v = width(r)
-moveToStart(r)
+directions = moveToStartBarriersOn(r)
 
 for i in 1:v
     if i % 2 != 0
@@ -18,4 +18,5 @@ for i in 1:v
 end
 
 moveToStart(r)
+moveToInitial(r, reverse(directions))
 show(r)
