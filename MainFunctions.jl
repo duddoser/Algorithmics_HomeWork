@@ -41,12 +41,6 @@ function moveTillTheEnd(robot, destination, markers=false)
     return steps
 end
 
-function moveToTheSud(robot)
-    while !isborder(robot, Sud)
-        move!(robot, Sud)
-    end
-end
-
 
 function moveSeveralCells(robot, number, side, markers=false)
     for i in 1:number
@@ -114,14 +108,13 @@ function moveToInitial(robot::Robot, reversedArray)
     end
 end
 
-function moveBorderSide(robot, side, markers=false) # !!! проверить первые файлы на коллизии
-    ortSide = HorizonSide(int(side) + 1 % 4)
+function moveBorderSide(robot, side::Int, markers=false) # !!! проверить первые файлы на коллизии
+    ortSide = HorizonSide((side + 1) % 4)
     steps = 0
-    while isborder(robot, side)
+    while isborder(robot, HorizonSide(side))
         if markers
             putmarker!(robot)
         end
-
         if !isborder(robot, ortSide)
             move!(robot, ortSide)
             steps += 1
