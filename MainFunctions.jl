@@ -156,30 +156,22 @@ function inverse(side)
     
 end
 
+function moveSpiral(robot)
+    steps = 1
+    side = Ost
+    while !ismarker(robot)
+        for i in 1:steps
+            moveIsMarker(robot, side)
+        end
+        side = HorizonSide((Int(side) + 1) % 4)
+        for i in 1:steps
+            moveIsMarker(robot, side)
+        end
+        side = HorizonSide((Int(side) + 1) % 4)
+        steps += 1
+    end
+end
 
-# function moveIsBorder(robot, side_border, side_dir, markers=false) # !!! повторяющийся код
-#     while isborder(robot, side_border)
-#         if markers
-#             putmarker!(robot)
-#         end
-
-#         if !isborder(robot, side_dir)
-#             move!(robot, side_dir)
-#         end
-#     end
-
-#     if markers
-#         putmarker!(robot)
-#     end
-
-#     if !isborder(robot, side_border)
-#         return true
-#     end
-# end
-
-# function goAroundBarrier(robot, side) # так как робота привожу в ю-в угол, то огибаю в сторону севера
-#     moveIsSideBorder(robot, side, )
-# end
 
 function makeSnakeLineBarriersOn(robot)
     side = Ost
@@ -189,4 +181,12 @@ function makeSnakeLineBarriersOn(robot)
     for i in 1:vertical
         moveTillTheEndBarriersOn(robot, side, horizontal)
     end
+end
+
+function moveIsMarker(robot, side_dir::HorizonSide)
+    if !ismarker(robot)
+        move!(robot, side_dir)
+        return true
+    end
+    return false
 end

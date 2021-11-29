@@ -1,9 +1,18 @@
 using HorizonSideRobots
 include("MainFunctions.jl")
 
-r = Robot()
-flag = moveIsBorder(r, Nord, Ost)
-if !flag
-    moveIsBorder(r, Nord, West)
+steps = 1
+while isborder(r, Nord)
+    global steps
+    moveSeveralCells(r, steps, West)
+    if !isborder(r, Nord)
+        break
+    end
+    steps += 1
+    moveSeveralCells(r, steps, Ost)
+    if !isborder(r, Nord)
+        break
+    end
+    steps +=1
 end
-show(r)
+putmarker!(r)
