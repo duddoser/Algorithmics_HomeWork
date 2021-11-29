@@ -2,8 +2,7 @@ using HorizonSideRobots
 include("MainFunctions.jl")
 # гориз - len, верт - wid
 
-
-r = Robot()
+moveToStart(r)
 wid, len = width(r), length(r)
 for i in 1:(wid // 2)
     move!(r, Nord)
@@ -11,7 +10,7 @@ end
 
 for _ in 1:(len // 2)
     putmarker!(r)
-    move!(r, West)
+    move!(r, Ost)
 end
 
 moveTillTheEnd(r, Nord, true)
@@ -21,9 +20,8 @@ for _ in 1:(wid // 2)
     move!(r, Nord)
 end
 
-moveTillTheEnd(r, West, true)
+moveTillTheEnd(r, Ost, true)
 for _ in 1:(len // 2 - 1)
-    move!(r, Ost)
+    move!(r, West)
 end
 
-show(r)

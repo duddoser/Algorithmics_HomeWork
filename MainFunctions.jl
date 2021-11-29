@@ -27,7 +27,7 @@ function width(robot)
 end
 
 function moveTillTheEnd(robot, destination, markers=false)
-    steps = 1
+    steps = 0
     while !isborder(robot, destination)
         if markers
             putmarker!(robot)
@@ -80,46 +80,40 @@ end
 
 function moveToStartBarriersOn(robot::Robot)
     directions = Int[]
-    while (!isborder(robot, Sud) && !isborder(robot, West))
-        if !isborder(robot, West)
-            push!(directions, moveTillTheEnd(robot, West))
-        else !isborder(robot, Sud)
-            push!(directions, moveTillTheEnd(robot, Sud))
-        end
-        n = moveTillTheEnd(robot, Sud)
-        if n != 0
-            push!(directions, n)
-        end
+    while (!isborder(robot, Sud) || !isborder(robot, West))
+        push!(directions, moveTillTheEnd(robot, West))
+        push!(directions, moveTillTheEnd(robot, Sud))
     end
     return directions
 end
 
-function moveToInitial(robot::Robot, reversedArray)
+function moveToInitial(robot::Robot, reversedArray::Vector)
     for i in 1:size(reversedArray)[1]
-        if i % 2 != 0
-            for x in 1:(reversedArray[i] + 1)
-                move!(r, Ost)
+        if i % 2 == 0
+            for x in 1:reversedArray[i]
+                if !isborder(robot, Ost)
+                    move!(robot, Ost)
+                end
             end
         else
-            for x in 1:(reversedArray[i] - 1)
-                move!(r, Nord)
+            for x in 1:reversedArray[i]
+                if !isborder(robot, Nord)
+                    move!(robot, Nord)
+                end
             end
         end
     end
 end
 
-function moveBorderSide(robot, side::Int, markers=false) # !!! проверить первые файлы на коллизии
-    ortSide = HorizonSide((side + 1) % 4)
+function moveBorderSide(robot::Robot, dir_side::HorizonSide, border_side::HorizonSide, markers=false) 
     steps = 0
-    while isborder(robot, HorizonSide(side))
+    while isborder(robot, border_side)
         if markers
             putmarker!(robot)
         end
-        if !isborder(robot, ortSide)
-            move!(robot, ortSide)
+        if !isborder(robot, dir_side)
+            move!(robot, dir_side)
             steps += 1
-        else
-            return false
         end
     end
 

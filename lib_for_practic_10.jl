@@ -128,7 +128,7 @@ movements!(condition::Function, robot, side, max_num_steps)
 
 -- condition - функция без аргументов, возвращающая логическое значение
 """
-function movements!(condition::Function, robot, side, max_num_steps)
+function movements!(stop_condition::Function, robot, side, max_num_steps)
     n = 0
     while n < max_num_steps && condition() && try_move!(robot, side) # - в этом логическом выражении порядок аргументов важен!
         n += 1
@@ -145,9 +145,9 @@ movements!(condition::Function, robot, side)
 
 -- condition - функция без аргументов, возвращающая логическое значение
 """
-function movements!(condition::Function, robot, side) 
+function movements!(stop_condition::Function, robot, side) 
     n=0
-    while condition() && try_move!(robot,side)
+    while !stop_condition() && try_move!(robot,side)
         n += 1
     end
     return n
@@ -160,11 +160,11 @@ shuttle!(condition::Function, robot, side)
 - перемещает робота "туда-сюда" (челноком), с увеличением амплитуды, до тех пор пока не выполнится условие condition()
 - side - начальное направление перемещений
 """
-function  shuttle!(condition::Function, robot, side)
+function  shuttle!(stop_condition::Function, robot, side)
     n=0 # число шагов от начального положения
-    while !condition()  # condition(robot) - как вариант
+    while !stop_condition()  # condition(robot) - как вариант
         n += 1
-        movements!(() -> !condition(), robot, side, n)
+        movements!(() -> !stop_condition(), robot, side, n)
         side = inverse(side)
     end
 end
@@ -197,6 +197,14 @@ function spiral!(condition::Function, robot, side = Nord)
     end
 end
 
+function snake!(stop_condition::Function, robot, (next_row_side, move_side)::NTuple{2, HorizonSide} = (Nord, Ost))
+    movements!(robot, move_side)
+    while !stop_condition() && try_move!(robot, next_row_side)
+        move_side = inverse(move_side)
+        movements!(robot, move_side)
+    end
+end
+
 struct PutmarkersRobot{TypeRobot}
     robot::TypeRobot
 end
@@ -219,8 +227,47 @@ function try_move!(robot::PutmarkersRobot, side)::Bool
     return result
 end
 
-import HorizonSideRobots: idborder
+import HorizonSideRobots: isborder
 isborder(robot::PutmarkersRobot, side) = isborder(robot.robot, side)
+
+struct BorderRobot{TypeRobot}  # TypeRobot = Robot | CoordRobot | ...?
+    robot::TypeRobot
+end
+
+# import HorizonSideRobots: isborder
+# isborder(robot::BorderRobot, side) = isborder(robot.robot, side)
+"""
+try_move!(robot::BorderRobot, side)::Bool 
+
+-- делает попытку прямолинейного перемещение робота в заданном направлении, в случае необходимости пытаясь обойти внутреннюю прямолинейную 
+или прямоугольную перегородку, и возвращает, в случае успеха, значение true, или значение - false, если робот упирается во внешнюю рамку 
+"""
+function try_move!(robot::BorderRobot, side)::Bool 
+    ort_side = left(side)
+    n = movements!(() -> isborder(robot.robot, side), robot.robot, ort_side)
+    if isborder(r,side)
+        movements!(r, inverse(ort_side), n)
+        return false
+    end
+    move!(r,side)
+    movements!(() -> isborder(robot.robot, inverse(ort_side)), robot.robot, ort_side)
+    movements!(robot.robot, inverse(ort_side), n)
+    return true
+end
+
+#=
+Поскольку от фактического параметра TypeRobot типа BorderRobot реализация функции try_move! в данном случае не зависит, то
+в аннотации типа аргумента robot значение параметра TypeRobot не указано.
+
+ЗАМЕЧАНИЕ. 
+
+В принципе, при определении данной функции, указать на то, что фактическое значение параметра типа может быть любым, можно было бы ещё и 
+используюя ключевое слово where:
+
+function try_move!(robot::BorderRobot{TypeRobot}, side::HorizonSide)::Bool where TypeRobot
+    ...
+end
+
 
 
 #----------------------- КОНКРЕТНЫЙ ТИП CoordRobot: ----------------------

@@ -1,21 +1,29 @@
 using HorizonSideRobots
 include("MainFunctions.jl")
 global len
-# 0 - Nord, 1 - Ost, 2 - Sud, 3 - West 
+# 0 - Nord, 1 - West , 2 - Sud, 3 - Ost
 
-r = Robot()
 directions = moveToStartBarriersOn(r)
-len = length(r)
-w = width(r)
-moveTillTheEnd(r, Ost)
 
-for i in 2:(w + 1)
-    steps = moveTillTheEnd(r, HorizonSide((i + 2) % 4))
-    if len != steps # ура дошли
-        moveBorderSide(r, Int(West), true)
-        moveBorderSide(r, (i + 4) % 4, true)
-        moveBorderSide(r, Int(Ost), true)
-        moveBorderSide(r, Int(West), true)
+while !isborder(r, Ost)
+    if !isborder(r, Nord)
+        move!(r, Nord)
+    else
+        moveTillTheEnd(r, Sud)
+        if !isborder(r, Ost)
+            move!(r, Ost)
+        end
     end
 end
-show!(r)
+direct_side = Nord
+border_side = Ost
+for i in 1:4
+    global direct_side, border_side
+    moveBorderSide(r, direct_side, border_side, true)
+    direct_side = border_side
+    border_side = HorizonSide((Int(border_side) + 3) % 4)
+    move!(r, direct_side)
+end 
+
+moveToStart(r)
+moveToInitial(r, reverse(directions))

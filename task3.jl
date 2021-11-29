@@ -1,9 +1,8 @@
 using HorizonSideRobots
 include("MainFunctions.jl")
 
-r = Robot()
+directions = moveToStartBarriersOn(r)
 v = width(r)
-moveToStart(r)
 
 for i in 1:v
     if i % 2 != 0
@@ -18,4 +17,4 @@ for i in 1:v
 end
 
 moveToStart(r)
-show(r)
+moveToInitial(r, reverse(directions))
