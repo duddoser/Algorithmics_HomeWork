@@ -1,0 +1,55 @@
+using HorizonSideRobots
+include("MainFunctions.jl")
+
+abstract type AbstractRobot end
+import HorizonSideRobots: move!, isborder, putmarker!, ismarker, temperature
+
+move!(r::AbstractRobot, side) = move!(get(r), side)
+isborder(r::AbstractRobot, side) = isborder(get(r), side)
+putmarker!(r::AbstractRobot) = putmarker!(get(r))
+ismarker(r::AbstractRobot) = ismarker(get(r))
+temperature(r::AbstractRobot) = temperature(get(r))
+moveToBorder!(r::AbstractRobot, side) = moveToBorder!(get(r), side)
+
+mutable struct Coord
+    x::Int
+    y::Int 
+end
+
+Coord() = Coord(0,0) 
+get_coord(coord::Coord) = (coord.x, coord.y)
+
+mutable struct NChessRobot <: AbstractRobot
+    robot::Robot
+    N::Int
+    coord::Coord
+    NChessRobot(r, N::Int) = new(r, N, Coord(0, 0))
+end
+
+get(r::NChessRobot) = r.robot
+
+function move!(coord::Coord, side::HorizonSide)
+    if side == Nord
+        coord.y += 1
+    elseif side == Sud
+        coord.y -= 1
+    elseif side == Ost
+        coord.x += 1
+    else 
+        coord.x -= 1
+    end
+end
+
+function move!(robot::NChessRobot, side::HorizonSide)
+    move!(get(robot), side)
+    move!(robot.coord, side)
+end
+
+function putmarker!(r::NChessRobot)
+    x, y = get_coord(r.coord)
+    x = x % (2 * r.N)
+    y = y  % (2 * r.N)
+    if x in (0:r.N - 1) && y in (0:r.N - 1) || x in (r.N:2 * r.N- 1) && y in (r.N:2 * r.N- 1) 
+        putmarker!(get(r))
+    end
+end

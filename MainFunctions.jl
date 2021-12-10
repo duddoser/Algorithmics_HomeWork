@@ -26,7 +26,7 @@ function width(robot)
     return cells + 1
 end
 
-function moveTillTheEnd(robot, destination, markers=false)
+function moveTillTheEnd(robot::Robot, destination, markers=false)
     steps = 0
     while !isborder(robot, destination)
         if markers
@@ -42,7 +42,7 @@ function moveTillTheEnd(robot, destination, markers=false)
 end
 
 
-function moveSeveralCells(robot, number, side, markers=false)
+function moveSeveralCells(robot::Robot, number, side, markers=false)
     for i in 1:number
         if !isborder(robot, side)
             if markers
@@ -105,7 +105,7 @@ function moveToInitial(robot::Robot, reversedArray::Vector)
     end
 end
 
-function moveBorderSide(robot::Robot, dir_side::HorizonSide, border_side::HorizonSide, markers=false) 
+function moveBorderSide(robot, dir_side::HorizonSide, border_side::HorizonSide, markers=false) 
     steps = 0
     while isborder(robot, border_side)
         if markers
@@ -173,13 +173,11 @@ function moveSpiral(robot)
 end
 
 
-function makeSnakeLineBarriersOn(robot)
-    side = Ost
-    horizontal = length(robot)
-    vertical = width(robot)
-    
-    for i in 1:vertical
-        moveTillTheEndBarriersOn(robot, side, horizontal)
+function makeSnakeLine(robot, side)
+    moveTillTheEnd(robot, side)
+    while !isborder(robot, Nord) || !isborder(robot, West)
+        side = inverse(side)
+        moveTillTheEnd(robot, side)
     end
 end
 
@@ -189,4 +187,20 @@ function moveIsMarker(robot, side_dir::HorizonSide)
         return true
     end
     return false
+end
+
+function getOrtSide(side)
+    return HorizonSide((Int(side) + 1) % 4)
+end
+
+function isEdge(robot::Robot, dir_side)
+    ort_side = getOrtSide(dir_side)
+    steps = moveTillTheEnd(robot, ort_side)
+    flag = isborder(robot, ort_side) & isborder(robot, dir_side)
+    moveSeveralCells(robot, steps, inverse(ort_side))
+    if flag
+        return true
+    else
+        return false
+    end
 end
