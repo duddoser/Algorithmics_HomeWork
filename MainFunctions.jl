@@ -41,6 +41,21 @@ function moveTillTheEnd(robot::Robot, destination, markers=false)
     return steps
 end
 
+function moveTillTheEnd(robot, destination, markers=false)
+    steps = 0
+    while !isborder(robot, destination)
+        if markers
+            putmarker!(robot)
+        end
+        steps += 1
+        move!(robot, destination)
+    end
+    if markers
+        putmarker!(robot)
+    end
+    return steps
+end
+
 
 function moveSeveralCells(robot::Robot, number, side, markers=false)
     for i in 1:number

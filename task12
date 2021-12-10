@@ -41,6 +41,7 @@ function move!(coord::Coord, side::HorizonSide)
 end
 
 function move!(robot::NChessRobot, side::HorizonSide)
+    putmarker!(robot)
     move!(get(robot), side)
     move!(robot.coord, side)
 end
@@ -53,3 +54,15 @@ function putmarker!(r::NChessRobot)
         putmarker!(get(r))
     end
 end
+
+directions = moveToStartBarriersOn(r)
+n = parse(Int64, readline())
+chess_robot = NChessRobot(r, n)
+while !isborder(r, Nord)
+    moveTillTheEnd(chess_robot, Ost)
+    move!(chess_robot, Nord)
+    moveTillTheEnd(chess_robot, West)
+end
+moveTillTheEnd(chess_robot, Ost)
+moveToStart(r)
+moveToInitial(r, reverse(directions))
