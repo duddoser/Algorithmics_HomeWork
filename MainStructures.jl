@@ -39,7 +39,7 @@ function move!(coord::Coord, side::HorizonSide)
     end
 end
 
-function getSideX(n::Int)::HorizonSide
+function getSideX(n::Float64)::HorizonSide
     if n >= 0
         return Nord
     else
@@ -47,7 +47,7 @@ function getSideX(n::Int)::HorizonSide
     end
 end
 
-function getSideY(n::Int)::HorizonSide
+function getSideY(n::Float64)::HorizonSide
     if n >= 0
         return Ost
     else
@@ -55,7 +55,7 @@ function getSideY(n::Int)::HorizonSide
     end
 end
 
-function move!(robot::CrossRobot, coords::Tuple{Int64, Int64})
+function move!(robot::CrossRobot, coords::Tuple{Float64, Float64})
     putmarker!(robot)
     x = coords[1]
     y = coords[2]
