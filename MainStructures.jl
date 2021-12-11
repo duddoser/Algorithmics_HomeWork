@@ -1,9 +1,6 @@
 using HorizonSideRobots
 include("MainFunctions.jl")
 
-using HorizonSideRobots
-include("MainFunctions.jl")
-
 abstract type AbstractRobot end
 import HorizonSideRobots: move!, isborder, putmarker!, ismarker, temperature
 
@@ -22,13 +19,13 @@ end
 Coord() = Coord(0,0) 
 get_coord(coord::Coord) = (coord.x, coord.y)
 
-struct CoordRobot <: AbstractRobot
+struct CrossRobot <: AbstractRobot
     robot::Robot
     coord::Coord
-    CoordRobot(r) = new(r, Coord(0, 0))
+    CrossRobot(r) = new(r, Coord(0, 0))
 end
 
-get(r::CoordRobot) = r.robot
+get(r::CrossRobot) = r.robot
 
 function move!(coord::Coord, side::HorizonSide)
     if side == Nord
@@ -47,6 +44,7 @@ function getSideX(n::Int)::HorizonSide
         return Nord
     else
         return Sud
+    end
 end
 
 function getSideY(n::Int)::HorizonSide
@@ -54,18 +52,34 @@ function getSideY(n::Int)::HorizonSide
         return Ost
     else
         return West
+    end
 end
 
-function move!(robot::CoordRobot, x::Int, y::Int)
+function move!(robot::CrossRobot, coords::Tuple{Int64, Int64})
     putmarker!(robot)
+    x = coords[1]
+    y = coords[2]
     side_x = getSideX(x)
     side_y = getSideY(y)
     for i in 1:abs(x)
-        move!(get(robot), side_x)
-        move!(robot.coord, side_x)
+        if !isborder(robot, side_x) & !isborder(robot, side_y)
+            move!(get(robot), side_x)
+            move!(robot.coord, side_x)
+            move!(get(robot), side_y)
+            move!(robot.coord, side_y)
+            putmarker!(robot)
+        end
     end
+end
 
-    for j in 1:abs(y)
-        move!(get(robot), side_y)
-        move!(robot.coord, side_y)
+struct PutmarkerRobot <: AbstractRobot
+    robot::Robot
+end
+
+get(r::PutmarkerRobot) = r.robot
+
+function move!(r::PutmarkerRobot, side::HorizonSide)
+    putmarker!(r)
+    move(get(r), side)
+    putmarker!(r)
 end

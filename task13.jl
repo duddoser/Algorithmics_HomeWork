@@ -4,11 +4,13 @@ include("MainStructures.jl")
 
 moveToStart(r)
 
-length = length(r)
-coord_robot = CoordRobot(r)
+len = length(r)
+wid = width(r)
+min_value = min(len, wid)
+cross_robot = CrossRobot(r)
 
-for i in 1:length/2
-    move!(coord_robot, 1, 1)
-end
-
-moveTillTheEnd()
+move!(cross_robot, (min_value / 2, min_value / 2))
+move!(coord_robot, (-min_value / 2, min_value / 2))
+move!(coord_robot, (min_value, -min_value))
+move!(coord_robot, (-min_value / 2, min_value / 2))
+move!(coord_robot, (min_value / 2, min_value / 2))
