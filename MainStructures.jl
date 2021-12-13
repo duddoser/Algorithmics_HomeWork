@@ -41,17 +41,17 @@ end
 
 function getSideX(n::Float64)::HorizonSide
     if n >= 0
-        return Nord
+        return Ost
     else
-        return Sud
+        return West
     end
 end
 
 function getSideY(n::Float64)::HorizonSide
     if n >= 0
-        return Ost
+        return Nord
     else
-        return West
+        return Sud
     end
 end
 
@@ -82,4 +82,53 @@ function move!(r::PutmarkerRobot, side::HorizonSide)
     putmarker!(r)
     move(get(r), side)
     putmarker!(r)
+end
+
+struct BorderRobot <: AbstractRobot
+    robot::Robot
+end
+get(r::BorderRobot) = r.robot
+
+function move!(robot::BorderRobot, side::HorizonSide)
+    dir_steps = 0
+    if !isborder(get(robot), side)
+        move!(get(robot), side)
+    else
+        ort_side = getOrtSide(side)
+        steps = moveBorderSide(robot, ort_side, side)
+        move!(get(robot), side)
+        dir_steps = moveBorderSide(robot, side, inverse(ort_side))
+        moveSeveralCells(get(robot), steps, inverse(ort_side))
+    end
+    return dir_steps
+end
+
+function moveTillTheEnd(robot::BorderRobot, dir_side, markers = false)
+    steps = 0
+    while !isEdge(get(robot), dir_side)
+        if markers
+            putmarker!(robot)
+        end
+        steps += move!(robot, dir_side) + 1
+    end
+    if markers
+        putmarker!(robot)
+    end
+    return steps
+end
+
+function moveSteps(robot::BorderRobot, dir_side, steps, markers=false)
+    border_steps = 0
+    for i in 1:steps
+        if markers
+            putmarker!(robot)
+        end
+        border_steps += move!(robot, dir_side)
+        if i + border_steps >= steps
+            break
+        end
+    end
+    if markers
+        putmarker!(robot)
+    end
 end

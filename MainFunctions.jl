@@ -41,7 +41,7 @@ function moveTillTheEnd(robot::Robot, destination, markers=false)
     return steps
 end
 
-function moveTillTheEnd(robot, destination, markers=false)
+function moveTillTheEnd(robot::Robot, destination, markers=false)
     steps = 0
     while !isborder(robot, destination)
         if markers

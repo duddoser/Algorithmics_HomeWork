@@ -1,23 +1,6 @@
 using HorizonSideRobots
 include("MainFunctions.jl")
-
-abstract type AbstractRobot end
-import HorizonSideRobots: move!, isborder, putmarker!, ismarker, temperature
-
-move!(r::AbstractRobot, side) = move!(get(r), side)
-isborder(r::AbstractRobot, side) = isborder(get(r), side)
-putmarker!(r::AbstractRobot) = putmarker!(get(r))
-ismarker(r::AbstractRobot) = ismarker(get(r))
-temperature(r::AbstractRobot) = temperature(get(r))
-moveToBorder!(r::AbstractRobot, side) = moveToBorder!(get(r), side)
-
-mutable struct Coord
-    x::Int
-    y::Int 
-end
-
-Coord() = Coord(0,0) 
-get_coord(coord::Coord) = (coord.x, coord.y)
+include("MainStructures.jl")
 
 mutable struct NChessRobot <: AbstractRobot
     robot::Robot
