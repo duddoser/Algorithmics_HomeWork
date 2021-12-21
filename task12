@@ -1,0 +1,51 @@
+using HorizonSideRobots
+include("MainFunctions.jl")
+include("MainStructures.jl")
+
+mutable struct NChessRobot <: AbstractRobot
+    robot::Robot
+    N::Int
+    coord::Coord
+    NChessRobot(r, N::Int) = new(r, N, Coord(0, 0))
+end
+
+get(r::NChessRobot) = r.robot
+
+function move!(coord::Coord, side::HorizonSide)
+    if side == Nord
+        coord.y += 1
+    elseif side == Sud
+        coord.y -= 1
+    elseif side == Ost
+        coord.x += 1
+    else 
+        coord.x -= 1
+    end
+end
+
+function move!(robot::NChessRobot, side::HorizonSide)
+    putmarker!(robot)
+    move!(get(robot), side)
+    move!(robot.coord, side)
+end
+
+function putmarker!(r::NChessRobot)
+    x, y = get_coord(r.coord)
+    x = x % (2 * r.N)
+    y = y  % (2 * r.N)
+    if x in (0:r.N - 1) && y in (0:r.N - 1) || x in (r.N:2 * r.N- 1) && y in (r.N:2 * r.N- 1) 
+        putmarker!(get(r))
+    end
+end
+
+directions = moveToStartBarriersOn(r)
+n = parse(Int64, readline())
+chess_robot = NChessRobot(r, n)
+while !isborder(r, Nord)
+    moveTillTheEnd(chess_robot, Ost)
+    move!(chess_robot, Nord)
+    moveTillTheEnd(chess_robot, West)
+end
+moveTillTheEnd(chess_robot, Ost)
+moveToStart(r)
+moveToInitial(r, reverse(directions))
