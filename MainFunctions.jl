@@ -248,3 +248,12 @@ function isBarrierLeft(robot, border_side::HorizonSide, left_side::HorizonSide)
         return false
     end
 end
+
+function moveToMarker(robot::Robot, side::HorizonSide, markers = false)
+    while !ismarker(robot) & !isborder(robot, side)
+        if markers
+            putmarker!(robot)
+        end
+        move!(robot, side)
+    end
+end

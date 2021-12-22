@@ -2,10 +2,10 @@ using HorizonSideRobots
 include("MainFunctions.jl")
 include("MainStructures.jl")
 
+r = Robot(animate = false, "temp21.sit")
 function countField(c_robot::CountBorderRobot, dir_side::HorizonSide, edge_side::HorizonSide)::Int64
     borders = 0
     while !isEdge(get(c_robot), edge_side)
-    
         borders += moveTillTheEnd(c_robot, dir_side)
         moveTillTheEnd(c_robot, inverse(dir_side))
         move!(get(c_robot), edge_side)

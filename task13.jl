@@ -2,6 +2,7 @@ using HorizonSideRobots
 include("MainFunctions.jl")
 include("MainStructures.jl")
 
+r = Robot(animate = false, "temp13.sit")
 moveToStart(r)
 
 len = length(r)

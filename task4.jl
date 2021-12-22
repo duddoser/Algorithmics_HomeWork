@@ -1,6 +1,7 @@
 using HorizonSideRobots
 include("MainFunctions.jl")
 
+r = Robot(animate = false, "temp4.sit")
 directions = moveToStartBarriersOn(r)
 len = length(r)
 wid = width(r)

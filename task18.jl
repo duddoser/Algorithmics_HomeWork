@@ -1,6 +1,7 @@
 using HorizonSideRobots
 include("MainFunctions.jl")
 
+r = Robot(animate = false, "temp18.sit")
 directions = moveToStartBarriersOn(r)
 for i in 2:5
     putmarker!(r)

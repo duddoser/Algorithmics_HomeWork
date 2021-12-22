@@ -2,6 +2,7 @@ using HorizonSideRobots
 include("MainFunctions.jl")
 include("MainStructures.jl")
 
+r = Robot(animate = false, "temp16.sit")
 directions = moveToStartBarriersOn(r)
 v = width(r)
 border_robot = BorderRobot(r)

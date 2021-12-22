@@ -1,6 +1,7 @@
 using HorizonSideRobots
 include("MainFunctions.jl")
 
+r = Robot(animate = false, "temp10.sit")
 counter_temp = 0
 counter = 0
 while !isborder(r, Nord) || !isborder(r, Ost)

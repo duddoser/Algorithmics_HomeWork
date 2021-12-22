@@ -1,17 +1,19 @@
 using HorizonSideRobots
 include("MainFunctions.jl")
 
+r = Robot(animate = false, "temp1.sit")
 moveToStartBarriersOn(r)
+
 wid, len = width(r), length(r)
 
 moveSeveralCells(r, wid // 2, Nord)
-moveSeveralCells(r, len // 2 - 1, Ost, true)
+moveSeveralCells(r, len // 2 - (1 - len % 2), Ost, true)
+putmarker!(r)
 
-steps_nord = moveTillTheEnd(r, Nord, true)
-moveTillTheEnd(r, Sud, true)
+moveTillTheEnd(r, Nord)
+moveToMarker(r, Sud, true)
+moveTillTheEnd(r, Sud)
+moveToMarker(r, Nord, true)
 
-extra = wid % 2 == 0 ? wid - steps_nord - 1 : steps_nord 
-moveSeveralCells(r, extra, Nord)
-
-steps = moveTillTheEnd(r, Ost, true)
-moveSeveralCells(r, steps, West) 
+moveTillTheEnd(r, Ost)
+moveToMarker(r, West, true)

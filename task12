@@ -2,6 +2,7 @@ using HorizonSideRobots
 include("MainFunctions.jl")
 include("MainStructures.jl")
 
+r = Robot(animate = false, "temp12.sit")
 mutable struct NChessRobot <: AbstractRobot
     robot::Robot
     N::Int

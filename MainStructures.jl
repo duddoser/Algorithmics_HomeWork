@@ -139,6 +139,15 @@ function moveSteps(robot::BorderRobot, dir_side, steps, markers=false)
     end
 end
 
+function moveToMarker(robot::BorderRobot, side::HorizonSide, markers=false)
+    while !ismarker(robot) & !isEdge(get(robot), side)
+        if markers
+            putmarker!(robot)
+        end
+        move!(robot, side)
+    end
+end
+
 function moveAround(robot::BorderRobot, side::HorizonSide, markers=false)
     if !isborder(robot, side)
         move!(robot, side)

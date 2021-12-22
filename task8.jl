@@ -1,6 +1,7 @@
 using HorizonSideRobots
 include("MainFunctions.jl")
 
+r = Robot(animate = false, "temp8.sit")
 steps = 1
 while isborder(r, Nord)
     global steps
